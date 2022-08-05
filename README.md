@@ -141,7 +141,7 @@ initWASM({
 });
 ```
 
-And give the worker.js module to the main thread:
+And give the `worker.js` module to the main thread:
 
 ```js
 //main.js
