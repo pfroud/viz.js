@@ -106,7 +106,7 @@ The Worker module exports a function that takes
 You can use that to tweak the defaults, the only requirement is to define a
 `locateFile` method that returns the URL of the WASM file.
 
-Create file worker.js:
+Create file `worker.js`:
 
 ```js
 // worker.js
