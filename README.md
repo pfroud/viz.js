@@ -126,6 +126,8 @@ import wasmURL from "@aduh95/viz.js/wasm";
 initWASM({
   locateFile() {
     return wasmURL;
+    // If that does not work, try this:
+    // return String(wasmURL);
   },
 });
 ```
