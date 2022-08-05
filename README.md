@@ -96,8 +96,8 @@ Key differences with async API:
 
 #### Using a bundler
 
-You can either use the `worker` or the `workerURL` on the constructor. Note that
-when using `workerURL`, `Viz` constructor will try to spawn a webworker using
+You can either use the `worker` or the `workerURL` on the `Viz` constructor. Note that
+when using `workerURL`, the `Viz` constructor will try to spawn a webworker using
 `type=module`. If you don't want a module worker, you should provide a `worker`
 instead.
 
@@ -106,20 +106,29 @@ The Worker module exports a function that takes
 You can use that to tweak the defaults, the only requirement is to define a
 `locateFile` method that returns the URL of the WASM file.
 
+Create file worker.js:
+
 ```js
 // worker.js
 import initWASM from "@aduh95/viz.js/worker";
-// If you are not using a bundler that supports package.json#exports
-// use "./node_modules/@aduh95/viz.js/dist/render.browser.js" instead.
+// If you are not using a bundler that supports `package.json#exports`,
+// use this import declaration:
+// import initWASM from "./node_modules/@aduh95/viz.js/dist/render.browser.js";
 
 // You need to configure your bundler to treat `.wasm` file as file to return a URL.
 import wasmURL from "@aduh95/viz.js/wasm";
-// With Rollup, use the `@rollup/plugin-url` plugin and add `**/*.wasm` to the
-// `include` list in the plugin config.
-// With Webpack, use the `file-loader` plugin: "file-loader!@aduh95/viz.js/wasm"
-
-// If you are not using a bundler that supports package.json#exports
-// or doesn't have a file-loader plugin to get URL of the asset:
+// If you are using Rollup, use the `@rollup/plugin-url` plugin and
+// add `**/*.wasm` to the `include` list in the plugin config.
+// See https://www.npmjs.com/package/@rollup/plugin-url.
+//
+// If you are using Webpack, use the `file-loader` plugin and use this import
+// declaration:
+// import wasmURL from "file-loader!@aduh95/viz.js/wasm";
+// See https://v4.webpack.js.org/loaders/file-loader/.
+//
+// If you are not using a bundler that supports `package.json#exports`,
+// or you are using a bundler which doesn't have a file-loader plugin to get
+// URL of the asset, use this const declaration instead of an import declaration:
 // const wasmURL =
 //   new URL("./node_modules/@aduh95/viz.js/dist/render.wasm", import.meta.url);
 
@@ -132,17 +141,23 @@ initWASM({
 });
 ```
 
-And give feed that module to the main thread:
+And give the worker.js module to the main thread:
 
 ```js
 //main.js
 import Viz from "@aduh95/viz.js";
-// If you are not using a bundler that supports package.json#exports:
+// If you are not using a bundler that supports `package.json#exports`,
+// use this import declaration:
 // import Viz from "./node_modules/@aduh95/viz.js/dist/index.mjs";
-
-// If you are using Rollup, use `@surma/rollup-plugin-off-main-thread` plugin.
-// If you are using Webpack, use the `worker-loader` plugin and add this import:
+//
+// If you are using Rollup, use the `@surma/rollup-plugin-off-main-thread`
+// plugin.
+// See https://www.npmjs.com/package/@surma/rollup-plugin-off-main-thread.
+//
+// If you are using Webpack, use the `worker-loader` plugin and use
+// this import declaration:
 // import VizWorker from "worker-loader!./worker.js";
+// See https://v4.webpack.js.org/loaders/worker-loader/.
 
 let viz;
 async function dot2svg(dot, options) {
